@@ -1,0 +1,116 @@
+<%- include('../../partials/head', { title: 'Eigenaar — Trajecten', req }) %>
+
+<div class="flex items-start justify-between gap-6">
+  <div>
+    <h1 class="text-2xl font-semibold">Trajecten</h1>
+    <p class="mt-1 text-slate-600">Koppel kandidaten aan klinieken en beheer fases (gesprek → meeloopdag → aanbod → geplaatst).</p>
+  </div>
+</div>
+
+<% if (error) { %>
+  <div class="mt-4 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700"><%= error %></div>
+<% } %>
+
+<section class="mt-6 rounded-2xl border bg-white p-5 shadow-sm">
+  <h2 class="text-lg font-semibold">Nieuw traject</h2>
+  <form method="post" action="/owner/journeys/new" class="mt-4 grid gap-3 lg:grid-cols-6 lg:items-end">
+    <div class="lg:col-span-2">
+      <label class="block text-sm font-medium">Kliniek</label>
+      <select name="clinicId" class="mt-1 w-full rounded-lg border px-3 py-2 text-sm" required>
+        <option value="">Selecteer kliniek…</option>
+        <% clinics.forEach((c) => { %>
+          <option value="<%= c.id %>" <%= (values.clinicId === c.id) ? 'selected' : '' %>><%= c.name %></option>
+        <% }) %>
+      </select>
+    </div>
+    <div class="lg:col-span-2">
+      <label class="block text-sm font-medium">Kandidaat</label>
+      <select name="candidateId" class="mt-1 w-full rounded-lg border px-3 py-2 text-sm" required>
+        <option value="">Selecteer kandidaat…</option>
+        <% candidates.forEach((c) => { %>
+          <option value="<%= c.id %>" <%= (values.candidateId === c.id) ? 'selected' : '' %>><%= c.firstName %> <%= c.lastName %></option>
+        <% }) %>
+      </select>
+    </div>
+    <div class="lg:col-span-1">
+      <label class="block text-sm font-medium">Fase</label>
+      <select name="stage" class="mt-1 w-full rounded-lg border px-3 py-2 text-sm" required>
+        <option value="FIRST_INTERVIEW">1e gesprek</option>
+        <option value="TRIAL_DAY">Meeloopdag</option>
+        <option value="FINAL_OFFER">Laatste aanbod</option>
+        <option value="PLACED">Geplaatst</option>
+        <option value="REJECTED">Afgewezen</option>
+        <option value="WITHDRAWN">Teruggetrokken</option>
+      </select>
+    </div>
+    <div class="lg:col-span-1">
+      <label class="block text-sm font-medium">Gepland</label>
+      <input name="scheduledAt" type="datetime-local" class="mt-1 w-full rounded-lg border px-3 py-2 text-sm" value="<%= values.scheduledAt || '' %>" />
+    </div>
+    <div class="lg:col-span-6">
+      <label class="block text-sm font-medium">Notities</label>
+      <input name="notes" class="mt-1 w-full rounded-lg border px-3 py-2 text-sm" value="<%= values.notes || '' %>" />
+    </div>
+    <div class="lg:col-span-6">
+      <button class="rounded-lg bg-slate-900 px-4 py-2 text-white hover:bg-slate-800 text-sm">Traject aanmaken</button>
+    </div>
+  </form>
+</section>
+
+<section class="mt-6 rounded-2xl border bg-white p-5 shadow-sm">
+  <h2 class="text-lg font-semibold">Bestaande trajecten</h2>
+  <div class="mt-4 space-y-3">
+    <% if (!journeys.length) { %>
+      <div class="rounded-xl border bg-slate-50 p-4 text-sm text-slate-600">Nog geen trajecten.</div>
+    <% } %>
+    <% journeys.forEach((j) => { %>
+      <div id="j-<%= j.id %>" class="rounded-xl border p-4">
+        <div class="flex items-start justify-between gap-4">
+          <div>
+            <div class="font-semibold">
+              <a class="underline" href="/owner/candidates/<%= j.candidate.id %>"><%= j.candidate.firstName %> <%= j.candidate.lastName %></a>
+              <span class="text-slate-500">→</span>
+              <a class="underline" href="/owner/clinics/<%= j.clinic.id %>"><%= j.clinic.name %></a>
+            </div>
+            <div class="mt-1 text-sm text-slate-600">
+              Fase: <span class="font-medium"><%= stageLabelNl(j.stage) %></span>
+              <% if (j.scheduledAt) { %>
+                — gepland: <%= new Date(j.scheduledAt).toLocaleString('nl-NL') %>
+              <% } %>
+            </div>
+          </div>
+          <div class="text-xs text-slate-500">Aangemaakt: <%= new Date(j.createdAt).toLocaleString('nl-NL') %></div>
+        </div>
+
+        <form method="post" action="/owner/journeys/<%= j.id %>/update" class="mt-4 grid gap-3 lg:grid-cols-6 lg:items-end">
+          <div class="lg:col-span-2">
+            <label class="block text-xs text-slate-500">Fase</label>
+            <select name="stage" class="mt-1 w-full rounded-lg border px-3 py-2 text-sm">
+              <option value="FIRST_INTERVIEW" <%= j.stage === 'FIRST_INTERVIEW' ? 'selected' : '' %>>1e gesprek</option>
+              <option value="TRIAL_DAY" <%= j.stage === 'TRIAL_DAY' ? 'selected' : '' %>>Meeloopdag</option>
+              <option value="FINAL_OFFER" <%= j.stage === 'FINAL_OFFER' ? 'selected' : '' %>>Laatste aanbod</option>
+              <option value="PLACED" <%= j.stage === 'PLACED' ? 'selected' : '' %>>Geplaatst</option>
+              <option value="REJECTED" <%= j.stage === 'REJECTED' ? 'selected' : '' %>>Afgewezen</option>
+              <option value="WITHDRAWN" <%= j.stage === 'WITHDRAWN' ? 'selected' : '' %>>Teruggetrokken</option>
+            </select>
+          </div>
+          <div class="lg:col-span-2">
+            <label class="block text-xs text-slate-500">Gepland (optioneel)</label>
+            <input name="scheduledAt" type="datetime-local" class="mt-1 w-full rounded-lg border px-3 py-2 text-sm"
+              value="<%= j.scheduledAt ? new Date(j.scheduledAt).toISOString().slice(0,16) : '' %>" />
+          </div>
+          <div class="lg:col-span-2">
+            <label class="block text-xs text-slate-500">Notities (optioneel)</label>
+            <input name="notes" class="mt-1 w-full rounded-lg border px-3 py-2 text-sm" value="<%= j.notes || '' %>" />
+          </div>
+          <div class="lg:col-span-6">
+            <button class="rounded-lg bg-slate-900 px-4 py-2 text-white hover:bg-slate-800 text-sm">Bijwerken</button>
+          </div>
+        </form>
+      </div>
+    <% }) %>
+  </div>
+</section>
+
+<%- include('../../partials/foot') %>
+

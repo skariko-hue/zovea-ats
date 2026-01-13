@@ -1,0 +1,61 @@
+<%- include('../../partials/head', { title: 'Eigenaar — Kandidaat bewerken', req }) %>
+
+<h1 class="text-2xl font-semibold">Kandidaat bewerken</h1>
+<p class="mt-1 text-slate-600"><%= candidate.firstName %> <%= candidate.lastName %></p>
+
+<% if (error) { %>
+  <div class="mt-4 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700"><%= error %></div>
+<% } %>
+
+<form method="post" action="/owner/candidates/<%= candidate.id %>/edit" class="mt-6 rounded-2xl border bg-white p-6 shadow-sm grid gap-4 lg:grid-cols-2">
+  <div>
+    <label class="block text-sm font-medium">Voornaam</label>
+    <input class="mt-1 w-full rounded-lg border px-3 py-2" name="firstName" required value="<%= candidate.firstName %>" />
+  </div>
+  <div>
+    <label class="block text-sm font-medium">Achternaam</label>
+    <input class="mt-1 w-full rounded-lg border px-3 py-2" name="lastName" required value="<%= candidate.lastName %>" />
+  </div>
+  <div>
+    <label class="block text-sm font-medium">E-mail</label>
+    <input class="mt-1 w-full rounded-lg border px-3 py-2" name="email" type="email" required value="<%= candidate.email %>" />
+  </div>
+  <div>
+    <label class="block text-sm font-medium">Telefoon (optioneel)</label>
+    <input class="mt-1 w-full rounded-lg border px-3 py-2" name="phone" value="<%= candidate.phone || '' %>" />
+  </div>
+  <div class="lg:col-span-2">
+    <label class="block text-sm font-medium">Locatie</label>
+    <input class="mt-1 w-full rounded-lg border px-3 py-2" name="location" required value="<%= candidate.location %>" />
+  </div>
+  <div class="lg:col-span-2">
+    <label class="block text-sm font-medium">Wensen</label>
+    <textarea class="mt-1 w-full rounded-lg border px-3 py-2" name="jobWishes" rows="3" required><%= candidate.jobWishes %></textarea>
+  </div>
+  <div class="lg:col-span-2">
+    <label class="block text-sm font-medium">Salaris / tarief</label>
+    <input class="mt-1 w-full rounded-lg border px-3 py-2" name="salaryRate" required value="<%= candidate.salaryRate %>" />
+  </div>
+  <div class="lg:col-span-2">
+    <label class="block text-sm font-medium">Beschikbaarheid (optioneel)</label>
+    <input class="mt-1 w-full rounded-lg border px-3 py-2" name="availability" value="<%= candidate.availability || '' %>" />
+  </div>
+  <div>
+    <label class="block text-sm font-medium">Status</label>
+    <select name="status" class="mt-1 w-full rounded-lg border px-3 py-2">
+      <option value="ACTIVE" <%= candidate.status === 'ACTIVE' ? 'selected' : '' %>>Actief</option>
+      <option value="INACTIVE" <%= candidate.status === 'INACTIVE' ? 'selected' : '' %>>Inactief</option>
+    </select>
+  </div>
+  <div>
+    <label class="block text-sm font-medium">Notities (optioneel)</label>
+    <input class="mt-1 w-full rounded-lg border px-3 py-2" name="notes" value="<%= candidate.notes || '' %>" />
+  </div>
+  <div class="lg:col-span-2 flex gap-3">
+    <button class="rounded-lg bg-slate-900 px-4 py-2 text-white hover:bg-slate-800">Opslaan</button>
+    <a class="rounded-lg border px-4 py-2 hover:bg-slate-50" href="/owner/candidates/<%= candidate.id %>">Terug</a>
+  </div>
+</form>
+
+<%- include('../../partials/foot') %>
+

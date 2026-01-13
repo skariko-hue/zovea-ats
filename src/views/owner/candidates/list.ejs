@@ -1,0 +1,50 @@
+<%- include('../../partials/head', { title: 'Eigenaar — Kandidaten', req }) %>
+
+<div class="flex items-start justify-between gap-6">
+  <div>
+    <h1 class="text-2xl font-semibold">Kandidaten</h1>
+    <p class="mt-1 text-slate-600">Beheer wensen, tarief, status (actief/inactief), documenten en plaatsingen.</p>
+  </div>
+  <a class="rounded-lg bg-slate-900 px-4 py-2 text-white hover:bg-slate-800" href="/owner/candidates/new">+ Nieuwe kandidaat</a>
+</div>
+
+<div class="mt-6 rounded-2xl border bg-white shadow-sm overflow-hidden">
+  <table class="w-full text-sm">
+    <thead class="bg-slate-50 text-slate-600">
+      <tr>
+        <th class="text-left font-medium px-4 py-3">Naam</th>
+        <th class="text-left font-medium px-4 py-3">Locatie</th>
+        <th class="text-left font-medium px-4 py-3">Status</th>
+        <th class="text-left font-medium px-4 py-3">Geplaatst bij</th>
+        <th class="text-left font-medium px-4 py-3"></th>
+      </tr>
+    </thead>
+    <tbody>
+      <% if (!candidates.length) { %>
+        <tr><td class="px-4 py-6 text-slate-600" colspan="5">Nog geen kandidaten.</td></tr>
+      <% } %>
+      <% candidates.forEach((c) => { %>
+        <tr class="border-t">
+          <td class="px-4 py-3 font-medium"><%= c.firstName %> <%= c.lastName %></td>
+          <td class="px-4 py-3"><%= c.location %></td>
+          <td class="px-4 py-3">
+            <% if (c.status === 'ACTIVE') { %>
+              <span class="inline-flex items-center rounded-full bg-emerald-50 px-2 py-0.5 text-xs font-medium text-emerald-700 border border-emerald-200">Actief</span>
+            <% } else { %>
+              <span class="inline-flex items-center rounded-full bg-slate-100 px-2 py-0.5 text-xs font-medium text-slate-700 border border-slate-200">Inactief</span>
+            <% } %>
+          </td>
+          <td class="px-4 py-3">
+            <%= c.placedClinic ? c.placedClinic.name : '—' %>
+          </td>
+          <td class="px-4 py-3 text-right">
+            <a class="underline" href="/owner/candidates/<%= c.id %>">Open</a>
+          </td>
+        </tr>
+      <% }) %>
+    </tbody>
+  </table>
+</div>
+
+<%- include('../../partials/foot') %>
+

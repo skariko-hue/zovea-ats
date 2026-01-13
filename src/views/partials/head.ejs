@@ -19,6 +19,20 @@
           </div>
           <div class="flex items-center gap-3">
             <% if (req.user) { %>
+              <nav class="hidden md:flex items-center gap-2 text-sm">
+                <% if (req.user.role === 'OWNER') { %>
+                  <a class="px-2 py-1 rounded-lg hover:bg-slate-100" href="/owner">Dashboard</a>
+                  <a class="px-2 py-1 rounded-lg hover:bg-slate-100" href="/owner/clinics">Klinieken</a>
+                  <a class="px-2 py-1 rounded-lg hover:bg-slate-100" href="/owner/candidates">Kandidaten</a>
+                  <a class="px-2 py-1 rounded-lg hover:bg-slate-100" href="/owner/journeys">Trajecten</a>
+                <% } %>
+                <% if (req.user.role === 'CLIENT') { %>
+                  <a class="px-2 py-1 rounded-lg hover:bg-slate-100" href="/client">Portal</a>
+                <% } %>
+                <% if (req.user.role === 'CANDIDATE') { %>
+                  <a class="px-2 py-1 rounded-lg hover:bg-slate-100" href="/candidate">Portal</a>
+                <% } %>
+              </nav>
               <div class="text-sm text-slate-600">
                 Ingelogd als <span class="font-medium"><%= req.user.email %></span>
               </div>

@@ -48,7 +48,7 @@
             <div>
               <div class="font-semibold"><%= j.candidate.firstName %> <%= j.candidate.lastName %></div>
               <div class="mt-1 text-sm text-slate-600">
-                Fase: <span class="font-medium"><%= j.stage %></span>
+                Fase: <span class="font-medium"><%= stageLabelNl(j.stage) %></span>
                 <% if (j.scheduledAt) { %>
                   — gepland: <%= new Date(j.scheduledAt).toLocaleString('nl-NL') %>
                 <% } %>
@@ -72,7 +72,7 @@
               <div class="text-xs text-slate-500">CV</div>
               <% const cv = (j.candidate.documents && j.candidate.documents[0]) ? j.candidate.documents[0] : null; %>
               <% if (cv) { %>
-                <a class="mt-1 inline-block text-slate-900 underline" href="<%= cv.storagePath %>" target="_blank" rel="noreferrer">
+                <a class="mt-1 inline-block text-slate-900 underline" href="/files/candidate/<%= cv.id %>" target="_blank" rel="noreferrer">
                   <%= cv.originalName %>
                 </a>
               <% } else { %>
@@ -98,7 +98,7 @@
           <div class="font-medium"><%= d.originalName %></div>
           <div class="text-xs text-slate-500"><%= new Date(d.createdAt).toLocaleString('nl-NL') %></div>
         </div>
-        <a class="rounded-lg bg-slate-900 px-3 py-1.5 text-white hover:bg-slate-800" href="<%= d.storagePath %>" target="_blank" rel="noreferrer">
+        <a class="rounded-lg bg-slate-900 px-3 py-1.5 text-white hover:bg-slate-800" href="/files/clinic/<%= d.id %>" target="_blank" rel="noreferrer">
           Open
         </a>
       </div>

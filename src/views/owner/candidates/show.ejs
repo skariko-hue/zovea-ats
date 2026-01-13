@@ -1,0 +1,174 @@
+<%- include('../../partials/head', { title: 'Eigenaar — Kandidaat', req }) %>
+
+<div class="flex items-start justify-between gap-6">
+  <div>
+    <h1 class="text-2xl font-semibold"><%= candidate.firstName %> <%= candidate.lastName %></h1>
+    <p class="mt-1 text-slate-600"><%= candidate.email %> — <%= candidate.location %></p>
+  </div>
+  <div class="flex gap-3">
+    <a class="rounded-lg border px-4 py-2 hover:bg-slate-50" href="/owner/candidates">← Kandidaten</a>
+    <a class="rounded-lg bg-slate-900 px-4 py-2 text-white hover:bg-slate-800" href="/owner/candidates/<%= candidate.id %>/edit">Bewerken</a>
+  </div>
+</div>
+
+<% if (message) { %>
+  <div class="mt-4 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-800"><%= message %></div>
+<% } %>
+<% if (error) { %>
+  <div class="mt-4 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700"><%= error %></div>
+<% } %>
+
+<div class="mt-6 grid gap-6 lg:grid-cols-3">
+  <section class="lg:col-span-1 rounded-2xl border bg-white p-5 shadow-sm">
+    <h2 class="text-lg font-semibold">Status</h2>
+    <div class="mt-3 text-sm">
+      <% if (candidate.status === 'ACTIVE') { %>
+        <span class="inline-flex items-center rounded-full bg-emerald-50 px-2 py-0.5 text-xs font-medium text-emerald-700 border border-emerald-200">Actief</span>
+      <% } else { %>
+        <span class="inline-flex items-center rounded-full bg-slate-100 px-2 py-0.5 text-xs font-medium text-slate-700 border border-slate-200">Inactief</span>
+      <% } %>
+    </div>
+    <div class="mt-4 text-sm text-slate-600">
+      <div>Tarief: <span class="text-slate-900 font-medium"><%= candidate.salaryRate %></span></div>
+      <div class="mt-1">Beschikbaarheid: <span class="text-slate-900"><%= candidate.availability || 'Niet ingevuld' %></span></div>
+    </div>
+
+    <h3 class="mt-6 text-sm font-semibold text-slate-700">Kandidaat login</h3>
+    <p class="mt-1 text-sm text-slate-600">Maak een portal-login voor deze kandidaat.</p>
+    <form method="post" action="/owner/candidates/<%= candidate.id %>/create-login" class="mt-3 space-y-2">
+      <input class="w-full rounded-lg border px-3 py-2 text-sm" name="email" type="email" placeholder="kandidaat@domein.nl" required />
+      <input class="w-full rounded-lg border px-3 py-2 text-sm" name="password" type="text" placeholder="Wachtwoord (leeg = auto)" />
+      <button class="w-full rounded-lg bg-slate-900 px-4 py-2 text-white hover:bg-slate-800 text-sm">Login aanmaken</button>
+    </form>
+
+    <% if (candidate.users && candidate.users.length) { %>
+      <div class="mt-4 rounded-xl border bg-slate-50 p-3 text-sm">
+        <div class="text-xs text-slate-500">Bestaande logins</div>
+        <ul class="mt-2 space-y-1">
+          <% candidate.users.forEach((u) => { %>
+            <li class="flex items-center justify-between">
+              <span><%= u.email %></span>
+              <span class="text-xs text-slate-500"><%= u.isActive ? 'actief' : 'inactief' %></span>
+            </li>
+          <% }) %>
+        </ul>
+      </div>
+    <% } %>
+  </section>
+
+  <section class="lg:col-span-2 rounded-2xl border bg-white p-5 shadow-sm">
+    <h2 class="text-lg font-semibold">Wensen</h2>
+    <div class="mt-3 rounded-xl bg-slate-50 p-4 text-sm text-slate-800"><%= candidate.jobWishes %></div>
+
+    <h3 class="mt-6 text-sm font-semibold text-slate-700">Plaatsing</h3>
+    <div class="mt-2 text-sm text-slate-700">
+      <% if (candidate.placedClinic) { %>
+        Geplaatst bij <span class="font-medium"><%= candidate.placedClinic.name %></span>
+        <% if (candidate.placedAt) { %>
+          op <%= new Date(candidate.placedAt).toLocaleDateString('nl-NL') %>.
+        <% } %>
+      <% } else { %>
+        Nog niet geplaatst.
+      <% } %>
+    </div>
+
+    <h3 class="mt-6 text-sm font-semibold text-slate-700">Trajecten</h3>
+    <div class="mt-3 space-y-2">
+      <% if (!candidate.journeys.length) { %>
+        <div class="rounded-xl border bg-slate-50 p-4 text-sm text-slate-600">Nog geen trajecten.</div>
+      <% } %>
+      <% candidate.journeys.forEach((j) => { %>
+        <div class="rounded-xl border p-3 text-sm">
+          <div class="flex items-start justify-between gap-4">
+            <div>
+              <div class="font-medium">
+                <a class="underline" href="/owner/clinics/<%= j.clinic.id %>"><%= j.clinic.name %></a>
+              </div>
+              <div class="text-slate-600">Fase: <%= stageLabelNl(j.stage) %></div>
+              <% if (j.scheduledAt) { %>
+                <div class="text-slate-600">Gepland: <%= new Date(j.scheduledAt).toLocaleString('nl-NL') %></div>
+              <% } %>
+            </div>
+            <a class="text-sm underline" href="/owner/journeys#j-<%= j.id %>">Beheer</a>
+          </div>
+          <% if (j.notes) { %>
+            <div class="mt-2 rounded-lg bg-slate-50 p-2 text-slate-700"><%= j.notes %></div>
+          <% } %>
+        </div>
+      <% }) %>
+    </div>
+
+    <h3 class="mt-6 text-sm font-semibold text-slate-700">Nieuw traject koppelen</h3>
+    <form method="post" action="/owner/journeys/new" class="mt-3 grid gap-3 lg:grid-cols-4">
+      <input type="hidden" name="candidateId" value="<%= candidate.id %>" />
+      <div class="lg:col-span-2">
+        <label class="block text-xs text-slate-500">Kliniek</label>
+        <select name="clinicId" class="mt-1 w-full rounded-lg border px-3 py-2 text-sm" required>
+          <option value="">Selecteer kliniek…</option>
+          <% clinics.forEach((c) => { %>
+            <option value="<%= c.id %>"><%= c.name %> — KvK <%= c.kvkNumber %></option>
+          <% }) %>
+        </select>
+      </div>
+      <div>
+        <label class="block text-xs text-slate-500">Fase</label>
+        <select name="stage" class="mt-1 w-full rounded-lg border px-3 py-2 text-sm" required>
+          <option value="FIRST_INTERVIEW">1e gesprek</option>
+          <option value="TRIAL_DAY">Meeloopdag</option>
+          <option value="FINAL_OFFER">Laatste aanbod</option>
+          <option value="PLACED">Geplaatst</option>
+          <option value="REJECTED">Afgewezen</option>
+          <option value="WITHDRAWN">Teruggetrokken</option>
+        </select>
+      </div>
+      <div>
+        <label class="block text-xs text-slate-500">Gepland (optioneel)</label>
+        <input name="scheduledAt" type="datetime-local" class="mt-1 w-full rounded-lg border px-3 py-2 text-sm" />
+      </div>
+      <div class="lg:col-span-4">
+        <label class="block text-xs text-slate-500">Notities (optioneel)</label>
+        <input name="notes" class="mt-1 w-full rounded-lg border px-3 py-2 text-sm" />
+      </div>
+      <div class="lg:col-span-4">
+        <button class="rounded-lg bg-slate-900 px-4 py-2 text-white hover:bg-slate-800 text-sm">Traject aanmaken</button>
+      </div>
+    </form>
+  </section>
+</div>
+
+<section class="mt-6 rounded-2xl border bg-white p-5 shadow-sm">
+  <h2 class="text-lg font-semibold">Documenten</h2>
+  <p class="mt-1 text-sm text-slate-600">Upload o.a. CV. CV is zichtbaar voor klinieken zodra er een traject-koppeling is.</p>
+
+  <form method="post" action="/owner/candidates/<%= candidate.id %>/documents" enctype="multipart/form-data" class="mt-4 grid gap-3 lg:grid-cols-4 lg:items-end">
+    <div class="lg:col-span-1">
+      <label class="block text-sm font-medium">Type</label>
+      <input name="kind" class="mt-1 w-full rounded-lg border px-3 py-2 text-sm" placeholder="CV" />
+    </div>
+    <div class="lg:col-span-2">
+      <label class="block text-sm font-medium">Bestand</label>
+      <input type="file" name="file" class="mt-1 w-full text-sm" required />
+    </div>
+    <div class="lg:col-span-1">
+      <button class="w-full rounded-lg bg-slate-900 px-4 py-2 text-white hover:bg-slate-800 text-sm">Upload</button>
+    </div>
+  </form>
+
+  <div class="mt-4 space-y-2 text-sm">
+    <% if (!candidate.documents.length) { %>
+      <div class="rounded-xl border bg-slate-50 p-4 text-slate-600">Nog geen documenten.</div>
+    <% } %>
+    <% candidate.documents.forEach((d) => { %>
+      <div class="flex items-center justify-between gap-4 rounded-xl border p-3">
+        <div>
+          <div class="font-medium"><%= d.kind %>: <%= d.originalName %></div>
+          <div class="text-xs text-slate-500"><%= new Date(d.createdAt).toLocaleString('nl-NL') %></div>
+        </div>
+        <a class="rounded-lg border px-3 py-1.5 hover:bg-slate-50" href="/files/candidate/<%= d.id %>" target="_blank" rel="noreferrer">Open</a>
+      </div>
+    <% }) %>
+  </div>
+</section>
+
+<%- include('../../partials/foot') %>
+

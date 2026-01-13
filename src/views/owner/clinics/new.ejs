@@ -1,0 +1,46 @@
+<%- include('../../partials/head', { title: 'Eigenaar — Nieuwe kliniek', req }) %>
+
+<h1 class="text-2xl font-semibold">Nieuwe kliniek</h1>
+<p class="mt-1 text-slate-600">Basisinformatie (naam, adres, KvK, contactpersoon).</p>
+
+<% if (error) { %>
+  <div class="mt-4 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700"><%= error %></div>
+<% } %>
+
+<form method="post" action="/owner/clinics/new" class="mt-6 rounded-2xl border bg-white p-6 shadow-sm grid gap-4 lg:grid-cols-2">
+  <div class="lg:col-span-2">
+    <label class="block text-sm font-medium">Naam kliniek</label>
+    <input class="mt-1 w-full rounded-lg border px-3 py-2" name="name" required value="<%= values.name || '' %>" />
+  </div>
+  <div class="lg:col-span-2">
+    <label class="block text-sm font-medium">Adres</label>
+    <input class="mt-1 w-full rounded-lg border px-3 py-2" name="address" required value="<%= values.address || '' %>" />
+  </div>
+  <div>
+    <label class="block text-sm font-medium">KvK nummer</label>
+    <input class="mt-1 w-full rounded-lg border px-3 py-2" name="kvkNumber" required value="<%= values.kvkNumber || '' %>" />
+  </div>
+  <div>
+    <label class="block text-sm font-medium">Contactpersoon</label>
+    <input class="mt-1 w-full rounded-lg border px-3 py-2" name="contactName" required value="<%= values.contactName || '' %>" />
+  </div>
+  <div>
+    <label class="block text-sm font-medium">Contact e-mail</label>
+    <input class="mt-1 w-full rounded-lg border px-3 py-2" name="contactEmail" type="email" required value="<%= values.contactEmail || '' %>" />
+  </div>
+  <div>
+    <label class="block text-sm font-medium">Contact telefoon (optioneel)</label>
+    <input class="mt-1 w-full rounded-lg border px-3 py-2" name="contactPhone" value="<%= values.contactPhone || '' %>" />
+  </div>
+  <div class="lg:col-span-2">
+    <label class="block text-sm font-medium">Notities (optioneel)</label>
+    <textarea class="mt-1 w-full rounded-lg border px-3 py-2" name="notes" rows="3"><%= values.notes || '' %></textarea>
+  </div>
+  <div class="lg:col-span-2 flex gap-3">
+    <button class="rounded-lg bg-slate-900 px-4 py-2 text-white hover:bg-slate-800">Opslaan</button>
+    <a class="rounded-lg border px-4 py-2 hover:bg-slate-50" href="/owner/clinics">Annuleren</a>
+  </div>
+</form>
+
+<%- include('../../partials/foot') %>
+

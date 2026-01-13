@@ -1,0 +1,54 @@
+<%- include('../../partials/head', { title: 'Eigenaar — Nieuwe kandidaat', req }) %>
+
+<h1 class="text-2xl font-semibold">Nieuwe kandidaat</h1>
+<p class="mt-1 text-slate-600">Wensen, tarief, locatie en beschikbaarheid.</p>
+
+<% if (error) { %>
+  <div class="mt-4 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700"><%= error %></div>
+<% } %>
+
+<form method="post" action="/owner/candidates/new" class="mt-6 rounded-2xl border bg-white p-6 shadow-sm grid gap-4 lg:grid-cols-2">
+  <div>
+    <label class="block text-sm font-medium">Voornaam</label>
+    <input class="mt-1 w-full rounded-lg border px-3 py-2" name="firstName" required value="<%= values.firstName || '' %>" />
+  </div>
+  <div>
+    <label class="block text-sm font-medium">Achternaam</label>
+    <input class="mt-1 w-full rounded-lg border px-3 py-2" name="lastName" required value="<%= values.lastName || '' %>" />
+  </div>
+  <div>
+    <label class="block text-sm font-medium">E-mail</label>
+    <input class="mt-1 w-full rounded-lg border px-3 py-2" name="email" type="email" required value="<%= values.email || '' %>" />
+  </div>
+  <div>
+    <label class="block text-sm font-medium">Telefoon (optioneel)</label>
+    <input class="mt-1 w-full rounded-lg border px-3 py-2" name="phone" value="<%= values.phone || '' %>" />
+  </div>
+  <div class="lg:col-span-2">
+    <label class="block text-sm font-medium">Locatie</label>
+    <input class="mt-1 w-full rounded-lg border px-3 py-2" name="location" required value="<%= values.location || '' %>" />
+  </div>
+  <div class="lg:col-span-2">
+    <label class="block text-sm font-medium">Wensen (functie/uren/etc.)</label>
+    <textarea class="mt-1 w-full rounded-lg border px-3 py-2" name="jobWishes" rows="3" required><%= values.jobWishes || '' %></textarea>
+  </div>
+  <div class="lg:col-span-2">
+    <label class="block text-sm font-medium">Salaris / tarief</label>
+    <input class="mt-1 w-full rounded-lg border px-3 py-2" name="salaryRate" required value="<%= values.salaryRate || '' %>" />
+  </div>
+  <div class="lg:col-span-2">
+    <label class="block text-sm font-medium">Beschikbaarheid (optioneel)</label>
+    <input class="mt-1 w-full rounded-lg border px-3 py-2" name="availability" value="<%= values.availability || '' %>" />
+  </div>
+  <div class="lg:col-span-2">
+    <label class="block text-sm font-medium">Notities (optioneel)</label>
+    <textarea class="mt-1 w-full rounded-lg border px-3 py-2" name="notes" rows="3"><%= values.notes || '' %></textarea>
+  </div>
+  <div class="lg:col-span-2 flex gap-3">
+    <button class="rounded-lg bg-slate-900 px-4 py-2 text-white hover:bg-slate-800">Opslaan</button>
+    <a class="rounded-lg border px-4 py-2 hover:bg-slate-50" href="/owner/candidates">Annuleren</a>
+  </div>
+</form>
+
+<%- include('../../partials/foot') %>
+

@@ -61,7 +61,7 @@
         <div class="rounded-xl border p-3 text-sm">
           <div class="flex items-start justify-between gap-4">
             <div>
-              <div class="font-medium">Fase: <%= j.stage %></div>
+              <div class="font-medium">Fase: <%= stageLabelNl(j.stage) %></div>
               <div class="text-slate-600">
                 Kliniek: <span class="text-slate-900"><%= j.clinic.name %></span>
               </div>
@@ -92,7 +92,7 @@
           <div class="font-medium"><%= d.kind %>: <%= d.originalName %></div>
           <div class="text-xs text-slate-500"><%= new Date(d.createdAt).toLocaleString('nl-NL') %></div>
         </div>
-        <a class="rounded-lg bg-slate-900 px-3 py-1.5 text-white hover:bg-slate-800" href="<%= d.storagePath %>" target="_blank" rel="noreferrer">
+        <a class="rounded-lg bg-slate-900 px-3 py-1.5 text-white hover:bg-slate-800" href="/files/candidate/<%= d.id %>" target="_blank" rel="noreferrer">
           Open
         </a>
       </div>

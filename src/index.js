@@ -11,6 +11,9 @@ import authRoutes from './routes/auth.js';
 import ownerRoutes from './routes/owner.js';
 import clientRoutes from './routes/client.js';
 import candidateRoutes from './routes/candidate.js';
+import fileRoutes from './routes/files.js';
+import { ensureUploadDirs } from './lib/uploads.js';
+import { stageLabelNl } from './lib/journey.js';
 
 const app = express();
 const prisma = new PrismaClient();
@@ -20,6 +23,7 @@ const __dirname = path.dirname(new URL(import.meta.url).pathname);
 
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
+app.locals.stageLabelNl = stageLabelNl;
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
@@ -42,7 +46,7 @@ app.use(
   })
 );
 
-app.use('/uploads', express.static(path.join(process.cwd(), 'uploads')));
+ensureUploadDirs();
 app.use((req, _res, next) => {
   req.prisma = prisma;
   next();
@@ -57,6 +61,7 @@ app.get('/', requireAuth, (req, res) => {
 });
 
 app.use(authRoutes);
+app.use('/files', requireAuth, fileRoutes);
 app.use('/owner', requireAuth, requireRole('OWNER'), ownerRoutes);
 app.use('/client', requireAuth, requireRole('CLIENT'), clientRoutes);
 app.use('/candidate', requireAuth, requireRole('CANDIDATE'), candidateRoutes);
