@@ -3,6 +3,15 @@
 <h1 class="text-2xl font-semibold">Kandidaat portal</h1>
 <p class="mt-1 text-slate-600">Je profiel, wensen en trajectstatus.</p>
 
+<div class="mt-4 flex gap-3">
+  <a class="rounded-lg bg-slate-900 px-4 py-2 text-white hover:bg-slate-800 text-sm" href="/candidate/profiel">Profiel bewerken</a>
+  <form method="post" action="/candidate/documents" enctype="multipart/form-data" class="flex flex-col gap-2 sm:flex-row sm:items-center">
+    <input name="kind" class="rounded-lg border px-3 py-2 text-sm" placeholder="CV" />
+    <input type="file" name="file" class="text-sm" required />
+    <button class="rounded-lg border px-4 py-2 hover:bg-slate-50 text-sm">Upload document</button>
+  </form>
+</div>
+
 <div class="mt-6 grid gap-6 lg:grid-cols-3">
   <section class="lg:col-span-1 rounded-2xl border bg-white p-5 shadow-sm">
     <h2 class="text-lg font-semibold">Profiel</h2>

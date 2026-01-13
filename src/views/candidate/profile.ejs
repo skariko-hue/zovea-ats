@@ -1,0 +1,43 @@
+<%- include('../partials/head', { title: 'Kandidaat portal — Profiel', req }) %>
+
+<div class="flex items-start justify-between gap-6">
+  <div>
+    <h1 class="text-2xl font-semibold">Mijn profiel</h1>
+    <p class="mt-1 text-slate-600">Werk je wensen, tarief, locatie en beschikbaarheid bij.</p>
+  </div>
+  <a class="rounded-lg border px-4 py-2 hover:bg-slate-50" href="/candidate">← Terug</a>
+</div>
+
+<% if (error) { %>
+  <div class="mt-4 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700"><%= error %></div>
+<% } %>
+
+<form method="post" action="/candidate/profiel" class="mt-6 rounded-2xl border bg-white p-6 shadow-sm grid gap-4 lg:grid-cols-2">
+  <div>
+    <label class="block text-sm font-medium">Telefoon (optioneel)</label>
+    <input class="mt-1 w-full rounded-lg border px-3 py-2" name="phone" value="<%= candidate.phone || '' %>" />
+  </div>
+  <div class="lg:col-span-2">
+    <label class="block text-sm font-medium">Locatie</label>
+    <input class="mt-1 w-full rounded-lg border px-3 py-2" name="location" required value="<%= candidate.location %>" />
+  </div>
+  <div class="lg:col-span-2">
+    <label class="block text-sm font-medium">Wensen</label>
+    <textarea class="mt-1 w-full rounded-lg border px-3 py-2" name="jobWishes" rows="4" required><%= candidate.jobWishes %></textarea>
+  </div>
+  <div class="lg:col-span-2">
+    <label class="block text-sm font-medium">Salaris / tarief</label>
+    <input class="mt-1 w-full rounded-lg border px-3 py-2" name="salaryRate" required value="<%= candidate.salaryRate %>" />
+  </div>
+  <div class="lg:col-span-2">
+    <label class="block text-sm font-medium">Beschikbaarheid</label>
+    <input class="mt-1 w-full rounded-lg border px-3 py-2" name="availability" value="<%= candidate.availability || '' %>" />
+  </div>
+  <div class="lg:col-span-2 flex gap-3">
+    <button class="rounded-lg bg-slate-900 px-4 py-2 text-white hover:bg-slate-800">Opslaan</button>
+    <a class="rounded-lg border px-4 py-2 hover:bg-slate-50" href="/candidate">Annuleren</a>
+  </div>
+</form>
+
+<%- include('../partials/foot') %>
+
