@@ -1,0 +1,104 @@
+<%- include('../partials/head', { title: 'Kandidaat portal — Overzicht', req }) %>
+
+<h1 class="text-2xl font-semibold">Kandidaat portal</h1>
+<p class="mt-1 text-slate-600">Je profiel, wensen en trajectstatus.</p>
+
+<div class="mt-6 grid gap-6 lg:grid-cols-3">
+  <section class="lg:col-span-1 rounded-2xl border bg-white p-5 shadow-sm">
+    <h2 class="text-lg font-semibold">Profiel</h2>
+    <dl class="mt-3 space-y-2 text-sm">
+      <div>
+        <dt class="text-slate-500">Naam</dt>
+        <dd class="font-medium"><%= candidate.firstName %> <%= candidate.lastName %></dd>
+      </div>
+      <div>
+        <dt class="text-slate-500">E-mail</dt>
+        <dd><%= candidate.email %></dd>
+      </div>
+      <div>
+        <dt class="text-slate-500">Locatie</dt>
+        <dd><%= candidate.location %></dd>
+      </div>
+      <div>
+        <dt class="text-slate-500">Status</dt>
+        <dd>
+          <% if (candidate.status === 'ACTIVE') { %>
+            <span class="inline-flex items-center rounded-full bg-emerald-50 px-2 py-0.5 text-xs font-medium text-emerald-700 border border-emerald-200">Actief</span>
+          <% } else { %>
+            <span class="inline-flex items-center rounded-full bg-slate-100 px-2 py-0.5 text-xs font-medium text-slate-700 border border-slate-200">Inactief</span>
+          <% } %>
+        </dd>
+      </div>
+      <div>
+        <dt class="text-slate-500">Beschikbaarheid</dt>
+        <dd><%= candidate.availability || 'Niet ingevuld' %></dd>
+      </div>
+    </dl>
+  </section>
+
+  <section class="lg:col-span-2 rounded-2xl border bg-white p-5 shadow-sm">
+    <h2 class="text-lg font-semibold">Wensen & tarief</h2>
+    <div class="mt-3 grid gap-3 lg:grid-cols-2">
+      <div class="rounded-xl bg-slate-50 p-3 text-sm">
+        <div class="text-xs text-slate-500">Functie / wensen</div>
+        <div class="mt-1 text-slate-800"><%= candidate.jobWishes %></div>
+      </div>
+      <div class="rounded-xl bg-slate-50 p-3 text-sm">
+        <div class="text-xs text-slate-500">Salaris / tarief</div>
+        <div class="mt-1 text-slate-800"><%= candidate.salaryRate %></div>
+      </div>
+    </div>
+
+    <h3 class="mt-6 text-sm font-semibold text-slate-700">Trajecten</h3>
+    <p class="mt-1 text-sm text-slate-600">
+      Je ziet klinieken pas zodra je aan een traject gekoppeld bent (gesprek/meeloopdag/aanbod).
+    </p>
+    <div class="mt-3 space-y-2">
+      <% if (!candidate.journeys.length) { %>
+        <div class="rounded-xl border bg-slate-50 p-4 text-sm text-slate-600">Nog geen trajecten.</div>
+      <% } %>
+      <% candidate.journeys.forEach((j) => { %>
+        <div class="rounded-xl border p-3 text-sm">
+          <div class="flex items-start justify-between gap-4">
+            <div>
+              <div class="font-medium">Fase: <%= j.stage %></div>
+              <div class="text-slate-600">
+                Kliniek: <span class="text-slate-900"><%= j.clinic.name %></span>
+              </div>
+              <% if (j.scheduledAt) { %>
+                <div class="text-slate-600">Gepland: <%= new Date(j.scheduledAt).toLocaleString('nl-NL') %></div>
+              <% } %>
+            </div>
+          </div>
+          <% if (j.notes) { %>
+            <div class="mt-2 rounded-lg bg-slate-50 p-2 text-slate-700"><%= j.notes %></div>
+          <% } %>
+        </div>
+      <% }) %>
+    </div>
+  </section>
+</div>
+
+<section class="mt-6 rounded-2xl border bg-white p-5 shadow-sm">
+  <h2 class="text-lg font-semibold">Documenten</h2>
+  <p class="mt-1 text-sm text-slate-600">Je CV is zichtbaar voor een kliniek zodra je gekoppeld bent via een traject.</p>
+  <div class="mt-4 space-y-2 text-sm">
+    <% if (!candidate.documents.length) { %>
+      <div class="rounded-xl border bg-slate-50 p-4 text-slate-600">Nog geen documenten.</div>
+    <% } %>
+    <% candidate.documents.forEach((d) => { %>
+      <div class="flex items-center justify-between gap-4 rounded-xl border p-3">
+        <div>
+          <div class="font-medium"><%= d.kind %>: <%= d.originalName %></div>
+          <div class="text-xs text-slate-500"><%= new Date(d.createdAt).toLocaleString('nl-NL') %></div>
+        </div>
+        <a class="rounded-lg bg-slate-900 px-3 py-1.5 text-white hover:bg-slate-800" href="<%= d.storagePath %>" target="_blank" rel="noreferrer">
+          Open
+        </a>
+      </div>
+    <% }) %>
+  </div>
+</section>
+
+<%- include('../partials/foot') %>
+

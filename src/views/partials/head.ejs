@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="nl">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title><%= title || "Zovea ATS" %></title>
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body class="bg-slate-50 text-slate-900">
+    <div class="min-h-screen">
+      <header class="border-b bg-white">
+        <div class="mx-auto max-w-6xl px-4 py-3 flex items-center justify-between">
+          <div class="flex items-center gap-3">
+            <div class="h-9 w-9 rounded-xl bg-slate-900 text-white flex items-center justify-center font-semibold">Z</div>
+            <div>
+              <div class="font-semibold leading-tight">Zovea Talent</div>
+              <div class="text-sm text-slate-500 leading-tight">Applicant Tracking System</div>
+            </div>
+          </div>
+          <div class="flex items-center gap-3">
+            <% if (req.user) { %>
+              <div class="text-sm text-slate-600">
+                Ingelogd als <span class="font-medium"><%= req.user.email %></span>
+              </div>
+              <form method="post" action="/logout">
+                <button class="rounded-lg px-3 py-1.5 text-sm bg-slate-900 text-white hover:bg-slate-800">Uitloggen</button>
+              </form>
+            <% } %>
+          </div>
+        </div>
+      </header>
+      <main class="mx-auto max-w-6xl px-4 py-8">
+

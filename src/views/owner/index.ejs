@@ -1,0 +1,36 @@
+<%- include('../partials/head', { title: 'Eigenaar — Dashboard', req }) %>
+
+<div class="flex items-start justify-between gap-6">
+  <div>
+    <h1 class="text-2xl font-semibold">Eigenaar dashboard</h1>
+    <p class="mt-1 text-slate-600">Beheer klinieken, kandidaten, trajecten en documenten.</p>
+  </div>
+  <div class="rounded-2xl border bg-white p-4 shadow-sm">
+    <div class="text-sm text-slate-500">Overzicht</div>
+    <div class="mt-2 grid grid-cols-3 gap-3 text-center">
+      <div class="rounded-xl bg-slate-50 px-3 py-2">
+        <div class="text-2xl font-semibold"><%= stats.clinics %></div>
+        <div class="text-xs text-slate-500">Klinieken</div>
+      </div>
+      <div class="rounded-xl bg-slate-50 px-3 py-2">
+        <div class="text-2xl font-semibold"><%= stats.candidates %></div>
+        <div class="text-xs text-slate-500">Kandidaten</div>
+      </div>
+      <div class="rounded-xl bg-slate-50 px-3 py-2">
+        <div class="text-2xl font-semibold"><%= stats.journeys %></div>
+        <div class="text-xs text-slate-500">Trajecten</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="mt-8 rounded-2xl border bg-white p-6 shadow-sm">
+  <h2 class="text-lg font-semibold">Volgende stap</h2>
+  <p class="mt-2 text-slate-600">
+    Ik bouw hierna de volledige CRUD interfaces voor klinieken/kandidaten, het koppelen via trajectfases
+    (1e gesprek → meeloopdag → laatste aanbod → geplaatst) en documentbeheer met email-verzending.
+  </p>
+</div>
+
+<%- include('../partials/foot') %>
+

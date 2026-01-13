@@ -1,0 +1,155 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  OWNER
+  CLIENT
+  CANDIDATE
+}
+
+enum CandidateStatus {
+  ACTIVE
+  INACTIVE
+}
+
+enum JourneyStage {
+  FIRST_INTERVIEW
+  TRIAL_DAY
+  FINAL_OFFER
+  PLACED
+  REJECTED
+  WITHDRAWN
+}
+
+model User {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  passwordHash String
+  role         UserRole
+  isActive     Boolean  @default(true)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  clinicId     String?
+  clinic       Clinic?  @relation(fields: [clinicId], references: [id], onDelete: SetNull)
+
+  candidateId  String?
+  candidate    Candidate? @relation(fields: [candidateId], references: [id], onDelete: SetNull)
+
+  uploadedClinicDocuments ClinicDocument[]
+  uploadedCandidateDocuments CandidateDocument[]
+  createdJourneys Journey[] @relation("JourneyCreatedBy")
+}
+
+model Clinic {
+  id              String   @id @default(cuid())
+  name            String
+  address         String
+  kvkNumber       String   @unique
+  contactName     String
+  contactEmail    String
+  contactPhone    String?
+  notes           String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  users           User[]
+  documents       ClinicDocument[]
+  journeys        Journey[]
+  placedCandidates Candidate[] @relation("CandidatePlacedClinic")
+}
+
+model Candidate {
+  id               String          @id @default(cuid())
+  firstName        String
+  lastName         String
+  email            String          @unique
+  phone            String?
+  location         String
+  jobWishes        String
+  salaryRate       String
+  availability     String?
+  status           CandidateStatus @default(ACTIVE)
+  notes            String?
+  createdAt        DateTime        @default(now())
+  updatedAt        DateTime        @updatedAt
+
+  users            User[]
+  documents        CandidateDocument[]
+  journeys         Journey[]
+
+  placedClinicId   String?
+  placedClinic     Clinic? @relation("CandidatePlacedClinic", fields: [placedClinicId], references: [id], onDelete: SetNull)
+  placedAt         DateTime?
+}
+
+model Journey {
+  id          String       @id @default(cuid())
+  stage       JourneyStage
+  scheduledAt DateTime?
+  notes       String?
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+
+  clinicId    String
+  clinic      Clinic       @relation(fields: [clinicId], references: [id], onDelete: Cascade)
+
+  candidateId String
+  candidate   Candidate    @relation(fields: [candidateId], references: [id], onDelete: Cascade)
+
+  createdByUserId String
+  createdByUser   User @relation("JourneyCreatedBy", fields: [createdByUserId], references: [id], onDelete: Cascade)
+
+  @@index([clinicId])
+  @@index([candidateId])
+  @@index([stage])
+}
+
+model ClinicDocument {
+  id           String   @id @default(cuid())
+  clinicId     String
+  clinic       Clinic   @relation(fields: [clinicId], references: [id], onDelete: Cascade)
+
+  originalName String
+  storedName   String
+  mimeType     String
+  sizeBytes    Int
+  storagePath  String
+
+  uploadedByUserId String
+  uploadedByUser   User @relation(fields: [uploadedByUserId], references: [id], onDelete: Cascade)
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([clinicId])
+}
+
+model CandidateDocument {
+  id           String   @id @default(cuid())
+  candidateId  String
+  candidate    Candidate @relation(fields: [candidateId], references: [id], onDelete: Cascade)
+
+  kind         String   // e.g. "CV"
+  originalName String
+  storedName   String
+  mimeType     String
+  sizeBytes    Int
+  storagePath  String
+
+  uploadedByUserId String
+  uploadedByUser   User @relation(fields: [uploadedByUserId], references: [id], onDelete: Cascade)
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([candidateId])
+  @@index([kind])
+}
+

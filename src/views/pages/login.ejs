@@ -1,0 +1,37 @@
+<%- include('../partials/head', { title: 'Inloggen — Zovea ATS', req }) %>
+
+<div class="max-w-md mx-auto">
+  <div class="rounded-2xl border bg-white p-6 shadow-sm">
+    <h1 class="text-xl font-semibold">Inloggen</h1>
+    <p class="mt-1 text-sm text-slate-600">
+      Log in als Eigenaar, Kliniek (Client) of Kandidaat.
+    </p>
+
+    <% if (error) { %>
+      <div class="mt-4 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+        <%= error %>
+      </div>
+    <% } %>
+
+    <form method="post" action="/login" class="mt-5 space-y-4">
+      <div>
+        <label class="block text-sm font-medium">E-mail</label>
+        <input name="email" type="email" required class="mt-1 w-full rounded-lg border px-3 py-2" placeholder="naam@domein.nl" />
+      </div>
+      <div>
+        <label class="block text-sm font-medium">Wachtwoord</label>
+        <input name="password" type="password" required class="mt-1 w-full rounded-lg border px-3 py-2" placeholder="••••••••" />
+      </div>
+      <button class="w-full rounded-lg bg-slate-900 px-4 py-2 text-white hover:bg-slate-800">
+        Inloggen
+      </button>
+    </form>
+
+    <div class="mt-5 text-xs text-slate-500">
+      Demo: zie <code>README.md</code> voor voorbeeldaccounts.
+    </div>
+  </div>
+</div>
+
+<%- include('../partials/foot') %>
+
